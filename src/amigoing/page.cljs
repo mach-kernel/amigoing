@@ -29,7 +29,8 @@
      [form {:class ["w-full"
                     "max-w-2xl"
                     "self-center"
-                    "py-10"]}]
+                    "py-10"]
+            :query query}]
      (when loading
        [:span {:class :self-center}
         [:> Spinner {:size :xl :class "my-6"}]])

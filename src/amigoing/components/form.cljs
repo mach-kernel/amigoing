@@ -7,7 +7,7 @@
    [re-frame.core :as re-frame]))
 
 (defn form
-  [& {:keys [class]}]
+  [& {:keys [class query]}]
   [:div {:class (conj class :flex :flex-col :text-center)}
    [:> Label {:class [:text-2xl :font-bold]} "Enter your flight number"]
    [:> TextInput
@@ -17,6 +17,7 @@
              :max-w-48
              :text-2xl
              :font-semibold]
+     :placeholder query
      :style {:text-align :center}
      :icon FaPlane
      :sizing "lg"
