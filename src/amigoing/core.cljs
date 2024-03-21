@@ -13,7 +13,7 @@
 (def layout
   [:>
    Flowbite
-   [:div {:class "flex flex-col justify-between h-screen"}
+   [:div {:class "flex flex-col justify-between min-h-screen"}
     [:div {:class "flex flex-col size-full p-6"}
      [:span [:> DarkThemeToggle]]
      [page]]
