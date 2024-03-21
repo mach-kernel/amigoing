@@ -1,12 +1,4 @@
-(ns amigoing.util
-  (:require [clojure.string :as str]))
-
-(defn tw
-  "Makes class names string"
-  [& classes]
-  (->> classes 
-       (map name)
-       (str/join " ")))
+(ns amigoing.util)
 
 (defn debounce
   [ms f]

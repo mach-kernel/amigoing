@@ -1,9 +1,8 @@
 (ns amigoing.components.flight
   (:require 
-   [ajax.url :refer [params-to-str]]
-   [re-frame.core :as re-frame]
-   ["flowbite-react" :refer [Button Card Table]]
-   ["react-icons/fa" :refer [FaCheckCircle FaTimesCircle FaPaperPlane]]))
+   [amigoing.components.share :refer [share]]
+   ["flowbite-react" :refer [Card Table]]
+   ["react-icons/fa" :refer [FaCheckCircle FaTimesCircle]]))
 
 (def TableBody
   (.-Body Table))
@@ -18,40 +17,25 @@
   [& children]
   [:> TableCell {:class [:font-bold]} children])
 
-(defn- share-href
-  [going?]
-  (str
-   "https://twitter.com/intent/tweet?"
-   (params-to-str
-    :java
-    {:text 
-     (str 
-      "Looks like I'm " 
-      (when-not going?
-        "not ")
-      "going!"
-      \newline
-      (.-href js/location))})))
-
 (defn- going
   [going?]
-  [:div {:class [:flex
-                 :flex-row
-                 :justify-center
-                 :items-center
-                 :text-3xl
+  [:div {:class ["flex"
+                 "flex-row"
+                 "justify-center"
+                 "items-center"
+                 "text-3xl"
                  (if going?
-                   :text-emerald-400
-                   :text-red-400)]}
+                   "text-emerald-400"
+                   "text-red-400")]}
    (if going?
      [:> FaCheckCircle]
      [:> FaTimesCircle])
-   [:h2 {:class [:delay-50
-                 :p-2
-                 :text-4xl
-                 :font-bold
-                 :subpixel-antialiased
-                 :text-center]}
+   [:h2 {:class ["delay-50"
+                 "p-2"
+                 "text-4xl"
+                 "font-bold"
+                 "subpixel-antialiased"
+                 "text-center"]}
     (if going?
       "i'm going!"
       "i'm not going!")]])
@@ -72,14 +56,8 @@
          :airport} flight
         going? (not
                 (re-matches #"(?i)boeing.*" plane-model))]
-    [:> Card {:class (conj class :bg-light)}
+    [:> Card {:class class}
      [going going?]
-     [:> Button
-      {:class [:max-w-24 :self-center] 
-       :size :xs
-       :href (share-href going?)
-       :target "_blank"}
-      [:> FaPaperPlane {:class :mr-2}] "Share"]
      [:> Table {:hoverable true
                 :striped true
                 :theme {:root {:shadow :none}}}
@@ -97,4 +75,5 @@
        [:> TableRow
         [cell "To"]
         [:> TableCell
-         (inflect-airport destination)]]]]]))
+         (inflect-airport destination)]]]]
+     [share going?]]))

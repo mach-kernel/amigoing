@@ -24,18 +24,24 @@
       (-> url .-searchParams (.delete "q")))
     (.pushState js/history nil "" (.toString url))))
 
-(re-frame/reg-event-db
+(re-frame/reg-event-fx
  ::init-db
- (fn [& _]
-   {:loading false
-    :flight nil}))
+ (fn [_]
+   (let [url (new js/URL js/location)
+         existing-query (-> url .-searchParams (.get "q"))]
+     (merge
+      {:db {:loading false
+            :error false
+            :flight nil
+            :query existing-query}}
+      (when existing-query
+        {:dispatch [::search existing-query]})))))
 
 (re-frame/reg-event-fx
  ::clear
  (fn [{:keys [db]}]
-   (println "clearing")
    (update-query nil)
-   {:db (assoc db :flights nil :loading false :query nil)}))
+   {:db (assoc db :flights nil :loading false :query nil :error false)}))
 
 (re-frame/reg-event-fx
  ::search
@@ -50,7 +56,7 @@
                    :response-format (ajax/json-response-format {:keywords? true})
                    :with-credentials false
                    :on-success [::search-ok]
-                   :on-failure [::search-ok]}})))
+                   :on-failure [::search-fail]}})))
 
 (re-frame/reg-event-db
  ::search-ok
@@ -65,7 +71,13 @@
                 :aircraft-images
                 (group-by :registration aircraft-images)
 
-                :loading false}))))
+                :loading false
+                :error false}))))
+
+(re-frame/reg-event-db
+ ::search-fail
+ (fn [db [_ res]]
+   (assoc db :error true :loading false)))
 
 (re-frame/reg-sub
  ::state

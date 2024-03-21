@@ -1,6 +1,6 @@
 (ns amigoing.components.form
   (:require 
-   [amigoing.util :refer [debounce tw]]
+   [amigoing.util :refer [debounce]]
    [amigoing.events :as events]
    ["flowbite-react" :refer [Label TextInput]]
    ["react-icons/fa" :refer [FaPlane]]
@@ -8,7 +8,7 @@
 
 (defn form
   [& {:keys [class]}]
-  [:div {:class (str class " " (tw :flex :flex-col :text-center))}
+  [:div {:class (conj class :flex :flex-col :text-center)}
    [:> Label {:class [:text-2xl :font-bold]} "Enter your flight number"]
    [:> TextInput
     {:class [:self-center
@@ -25,6 +25,6 @@
      :on-focus (fn [e]
                  (set! (-> e .-target .-value) "")
                  (re-frame/dispatch [::events/clear]))
-     :on-change (debounce 250
+     :on-change (debounce 500
                           #(re-frame/dispatch
                             [::events/search (-> % .-target .-value)]))}]])
